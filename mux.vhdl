@@ -1,18 +1,23 @@
 library ieee;
+--use ieee.std_logic_unsigned.all;
 use ieee.std_logic_1164.all;
+--use ieee.numeric_std.all;
+--use ieee.numeric_std_unsigned.all;
 
-entity shift_reg is
-  port( I:  in std_logic_vector (3 downto 0); -- for loading
-        I_SHIFT_IN: in std_logic; -- shifted in bit for both left and right
-        sel:        in std_logic_vector(1 downto 0); -- 00:hold; 01: shift left; 10: shift right; 11: load
-        clock:    in std_logic; -- positive level triggering in problem 3
-        enable:    in std_logic; -- 0: don't do anything; 1: shift_reg is enabled
-        O:  out std_logic_vector(3 downto 0) -- output the current register content
+entity mux is
+--generic (
+  --N : integer:= 2; 
+  --INLENGTH : integer:= 8); --Number of bits in select
+port( 
+    I:  in std_logic_vector (1 downto 0)
+  --  I:  in std_logic_vector (INLENGTH*2**N-1 downto 0); -- for loading
+  --  sel: in std_logic_vector(N-1 downto 0); -- Choose input 
+  --  O:  out std_logic_vector(INLENGTH-1 downto 0) -- output the current register content
       );
-end shift_reg;
+end mux;
 
-architecture behav of shift_reg is
+architecture behav of mux is
 begin
-  O <= I;  -- WRONG! You must replace it with your implementation.
+ -- O <= I((to_integer(unsigned(sel))+1)*INLENGTH -1 downto to_integer(unsigned(sel))*INLENGTH);  
 end behav;
 
