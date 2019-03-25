@@ -18,21 +18,21 @@ architecture behav of shift_reg is
 signal reg, left, right: std_logic_vector(N downto 0);
 begin
   left <= reg(2 downto 0) & I_SHIFT_IN;
-  right <=I_SHIFT_IN & reg(3 downto 1); 
-  mux1 : entity work.mux 
-    generic map( 
-        INLENGTH => 4) 
+  right <= I_SHIFT_IN & reg(3 downto 1);
+  mux1 : entity work.mux
+    generic map(
+        INLENGTH => 4)
     port map(
         A => reg,
-        B => left, 
-        C => right, 
+        B => left,
+        C => right,
         D => I,
         sel => sel,
         O => reg);
   reg_process: process(clock) is
   begin
     if (rising_edge(clock)) then
-      if (enable = '0') then
+      if (enable = '1') then
         O <= reg;
       end if;
     end if;
