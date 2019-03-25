@@ -12,7 +12,11 @@ architecture behav of mux_tb is
               N : integer:= 2;
               INLENGTH : integer:= 8); --Number of bits in select
     port (
-           I:  in std_logic_vector (INLENGTH*2**N-1 downto 0); -- for loading
+           A: in std_logic_vector(INLENGTH-1 downto 0);
+           B: in std_logic_vector(INLENGTH-1 downto 0);
+           C: in std_logic_vector(INLENGTH-1 downto 0);
+           D: in std_logic_vector(INLENGTH-1 downto 0);
+           --I:  in std_logic_vector (INLENGTH*2**N-1 downto 0); -- for loading
            sel: in std_logic_vector(N-1 downto 0); -- Choose input
            O:  out std_logic_vector(INLENGTH-1 downto 0)); -- output the current register content
   end component;
@@ -24,10 +28,10 @@ begin
   --  Component instantiation.
   mux_0: mux
   port map (
-             I(7 downto 0) => a,
-             I(15 downto 8) => b,
-             I(23 downto 16) => c,
-             I(31 downto 24) => d,
+             A => a,
+             B => b,
+             C => c,
+             D => d,
              sel => sel,
              O => o);
 
