@@ -1,7 +1,7 @@
 GHDL=ghdl
 FLAGS=""
 
-all: mux shift_reg
+all: mux shift_reg shift_reg_8
 
 %: %.vhdl %_tb.vhdl
 	$(GHDL) -a $@.vhdl $@_tb.vhdl
