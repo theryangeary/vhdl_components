@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 
 entity shift_reg is
 generic(
-    N: integer:= 3
+    N: integer:= 7
     );
 port(
     I:  in std_logic_vector (N downto 0); -- for loading
@@ -16,34 +16,51 @@ port(
 end shift_reg;
 
 architecture behav of shift_reg is
-signal input, D, Q, left, right: std_logic_vector(N downto 0);
+signal input1, input2, D1, D2, Q1, Q2, left1, left2, right1, right2: std_logic_vector(3 downto 0);
 begin
 
-  left <= Q(2 downto 0) & I_SHIFT_IN;
-  right <= I_SHIFT_IN & Q(3 downto 1);
-  O <= Q;
-  input <= I;
+  left1 <= Q1(2 downto 0) & I_SHIFT_IN;
+  right1 <= Q2(0) & Q1(3 downto 1);
+  left2 <= Q2(2 downto 0) & Q1(3);
+  right2 <= I_SHIFT_IN & Q2(3 downto 1);
+  O <= Q2 & Q1;
+  input1 <= I(3 downto 0);
+  input2 <= I(7 downto 4);
 
   mux1 : entity work.mux
     generic map(
         INLENGTH => 4)
     port map(
-        A => Q,
-        B => left,
-        C => right,
-        D => input,
+        A => Q1,
+        B => left1,
+        C => right1,
+        D => input1,
         sel => sel,
-        O => D
+        O => D1
       );
+
+mux2 : entity work.mux
+  generic map(
+      INLENGTH => 4)
+  port map(
+      A => Q2,
+      B => left2,
+      C => right2,
+      D => input2,
+      sel => sel,
+      O => D2
+    );
 
   reg_process: process is
   begin
     wait until (rising_edge(clock));
     if (enable = '1') then
       if (sel = "11") then
-        Q <= I;
+        Q1 <= input1;
+        Q2 <= input2;
       else
-        Q <= D;
+        Q1 <= D1;
+        Q2 <= D2;
       end if;
     end if;
   end process;
