@@ -12,12 +12,11 @@ port(
 end full_adder;
 
 architecture behav of full_adder is
-  signal sum: in std_logic;
+  signal sum: std_logic;
   begin
     sum <= A xor B;
     O <= sum xor carry_in; 
     carry_out <= (A and B) or (sum and carry_in);
-  end process;
 
 end behav;
 
