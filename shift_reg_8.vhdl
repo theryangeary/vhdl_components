@@ -16,54 +16,43 @@ port(
 end shift_reg_8;
 
 architecture behav of shift_reg_8 is
-signal input1, input2, D1, D2, Q1, Q2, left1, left2, right1, right2: std_logic_vector(3 downto 0);
+--signal input1, input2, D1, D2, Q1, Q2, left1, left2, right1, right2: std_logic_vector(3 downto 0);
+  signal in_left, in_right, out_left, out_right: std_logic_vector(3 downto 0);
+  signal ishr, ishl: std_logic;
 begin
 
-  left1 <= Q1(2 downto 0) & I_SHIFT_IN;
-  right1 <= Q2(0) & Q1(3 downto 1);
-  left2 <= Q2(2 downto 0) & Q1(3);
-  right2 <= I_SHIFT_IN & Q2(3 downto 1);
-  O <= Q2 & Q1;
-  input1 <= I(3 downto 0);
-  input2 <= I(7 downto 4);
-
-  mux1 : entity work.mux
-    generic map(
-        INLENGTH => 4)
+  left_shifter: entity work.shift_reg
     port map(
-        A => Q1,
-        B => left1,
-        C => right1,
-        D => input1,
+        I => I(7 downto 4),
+        I_SHIFT_IN => ishl,
         sel => sel,
-        O => D1
+        clock => clock,
+        enable => enable,
+        O => out_left
       );
 
-mux2 : entity work.mux
-  generic map(
-      INLENGTH => 4)
-  port map(
-      A => Q2,
-      B => left2,
-      C => right2,
-      D => input2,
-      sel => sel,
-      O => D2
-    );
+  right_shifter: entity work.shift_reg
+    port map(
+        I => I(3 downto 0),
+        I_SHIFT_IN => ishr,
+        sel => sel,
+        clock => clock,
+        enable => enable,
+        O => out_right
+      );
 
-  reg_process: process is
-  begin
-    wait until (rising_edge(clock));
-    if (enable = '1') then
-      if (sel = "11") then
-        Q1 <= I(3 downto 0);
-        Q2 <= I(7 downto 4);
+    process (sel, out_right, out_left, I_SHIFT_IN)
+    begin
+      if (sel(1) = '0') then
+        ishl <= out_right(3);
+        ishr <= I_SHIFT_IN;
       else
-        Q1 <= D1;
-        Q2 <= D2;
+        ishl <= I_SHIFT_IN;
+        ishr <= out_left(0);
       end if;
-    end if;
-  end process;
+    end process;
+
+  O <= out_left & out_right;
 
 end behav;
 
