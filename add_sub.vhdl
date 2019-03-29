@@ -21,24 +21,26 @@ signal carry: std_logic_vector (N downto 0);
 signal output: std_logic_vector(N-1 downto 0);
 signal mux: std_logic_vector(N-1 downto 0);
 begin
-adder_gen:
-for i in 0 to N-1 generate
-  adder: entity work.full_adder
-  port map(
-    A => A(i),
-    B => mux(i),
-    carry_in => carry(i),
-    carry_out => carry(i+1),
-    O => output(i)
-    );
-end generate adder_gen;
+
+  adder_gen:
+  for i in 0 to N-1 generate
+    adder: entity work.full_adder
+    port map(
+      A => A(i),
+      B => mux(i),
+      carry_in => carry(i),
+      carry_out => carry(i+1),
+      O => output(i)
+      );
+  end generate adder_gen;
+
   over_flow <= carry(N);
   carry(0) <= '0';
   process(B, sel)
     begin
     if sel = '0' then
       mux <= B;
-    else 
+    else
       mux <= not B;
     end if;
   end process;
@@ -46,6 +48,7 @@ end generate adder_gen;
   begin
     wait until (rising_edge(clock));
       O <= output;
+      over_flow <= carry(N) xor carry(N-1);
   end process;
 end behav;
 
